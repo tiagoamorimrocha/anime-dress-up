@@ -52,6 +52,13 @@ ALIGNMENTS = {
     # chinese.png (1024x1536): derived 2026-07-08 from whole-body SAM bboxes
     # (target base-doll.png bbox y 103-1419, source bbox y 29-1509).
     "chinese": {"scale": 0.8891891891891892, "dx": 92.23378378378379, "dy": 77.2135135135135},
+    # hair_0001_Layer-1.png (870x1808, the gradient/purple hair PSD's full-body
+    # composite): derived 2026-07-08 from whole-body SAM bboxes (target
+    # base-doll.png bbox y 103-1419, source bbox y 77-1786). purple-hair.png
+    # (869x1810, exported separately, 1-2px off from rounding) shares this
+    # same pose/canvas — confirmed by near-identical head x-center between
+    # its own hair bbox and gradient-hair's — so reuse this alignment for it.
+    "hair-gradient": {"scale": 0.770040959625512, "dx": 186.5005851375073, "dy": 43.70684610883558},
 }
 
 

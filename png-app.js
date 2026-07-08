@@ -19,6 +19,8 @@ const WARDROBE = [
       { id: "goth-hair", name: "Goth Buns" },
       { id: "turquoise-hair", name: "Turquoise Twintails" },
       { id: "chinese-hair", name: "Long Black Hair" },
+      { id: "gradient-hair", name: "Gradient Waves" },
+      { id: "purple-hair", name: "Purple Bun" },
     ],
   },
   {
