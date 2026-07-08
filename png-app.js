@@ -18,6 +18,7 @@ const WARDROBE = [
       { id: "punk-buns", name: "Punk Buns" },
       { id: "goth-hair", name: "Goth Buns" },
       { id: "turquoise-hair", name: "Turquoise Twintails" },
+      { id: "chinese-hair", name: "Long Black Hair" },
     ],
   },
   {
@@ -28,6 +29,7 @@ const WARDROBE = [
       { id: "goth-top", name: "Goth Top" },
       { id: "black-top", name: "Black Goth Top" },
       { id: "turquoise-top", name: "Turquoise Corset" },
+      { id: "chinese-top", name: "Red Camisole" },
     ],
   },
   {
@@ -42,6 +44,7 @@ const WARDROBE = [
       { id: "star-skirt", name: "Star Skirt" },
       { id: "goth-skirt", name: "Goth Skirt" },
       { id: "turquoise-skirt", name: "Turquoise Skirt" },
+      { id: "chinese-skirt", name: "Denim Skirt" },
     ],
   },
   {
@@ -67,6 +70,7 @@ const WARDROBE = [
       { id: "mary-janes", name: "Mary Janes" },
       { id: "goth-boots", name: "Goth Boots" },
       { id: "turquoise-boots", name: "Turquoise Boots" },
+      { id: "chinese-shoes", name: "Sneakers" },
     ],
   },
   {

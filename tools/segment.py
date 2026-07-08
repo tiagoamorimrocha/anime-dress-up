@@ -197,6 +197,13 @@ CONFIG = [
                                  "neg": [(450, 810), (610, 810), (500, 910), (410, 820), (650, 820), (500, 770)]},
         },
     },
+    # chinese-top/skirt/hair/shoes are NOT cut here: they come as hand-cut
+    # transparent layers exported from Photoshop (references/chinese_000*.png)
+    # and are ingested by tools/ingest_layers.py --align chinese. That path
+    # is preferred over SAM whenever per-garment layer exports exist — see
+    # ingest_layers.py's docstring. (An earlier SAM cut of this set existed;
+    # keeping a CONFIG group for it here would silently overwrite the better
+    # Photoshop assets on a bare `segment.py` run, so it was removed.)
     {
         "src": "base-doll.png",
         "items": {
