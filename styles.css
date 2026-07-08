@@ -16,13 +16,29 @@ html, body {
 
 body {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 100dvh;
   font-family: -apple-system, "Segoe UI", sans-serif;
-  background: #fff0f5;
+  background: #111;
   color: #444;
   user-select: none;
   -webkit-user-select: none;
+}
+
+/* Locked to the target iPhone's viewport ratio (390x844) so the layout
+   looks identical everywhere we test it, not just on that one device —
+   we only deploy for this ratio for now. Width is derived from
+   `aspect-ratio` (auto height) so it's always exactly 390:844, whether
+   the surrounding window is wide+short or narrow+tall. */
+#app-frame {
+  width: min(100vw, calc(100dvh * 390 / 844));
+  aspect-ratio: 390 / 844;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff0f5;
+  color: #444;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }

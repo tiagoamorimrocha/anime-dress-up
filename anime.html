@@ -43,57 +43,59 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="manifest" href="manifest.json" />
 
-  <link rel="stylesheet" href="styles.css?v=2026-07-08-172937" />
+  <link rel="stylesheet" href="styles.css?v=2026-07-08-174753" />
 </head>
 <body>
-  <header>
-    <h1>✨ Dress Up! ✨</h1>
-    <div class="actions">
-      <a class="mode-link" href="index.html" title="Doodle mode">✏️</a>
-      <button id="btn-edit" title="Adjust item positions">🔧</button>
-      <button id="btn-random" title="Random outfit">🎲</button>
-      <button id="btn-reset" title="Start over">↺</button>
-    </div>
-  </header>
-
-  <nav id="tabs"></nav>
-
-  <main>
-    <div id="items"></div>
-
-    <section id="stage">
-      <div id="doll-area">
-        <div id="pdoll">
-          <img class="base" src="assets/png/base-doll.png" alt="doll" />
-        </div>
+  <div id="app-frame">
+    <header>
+      <h1>✨ Dress Up! ✨</h1>
+      <div class="actions">
+        <a class="mode-link" href="index.html" title="Doodle mode">✏️</a>
+        <button id="btn-edit" title="Adjust item positions">🔧</button>
+        <button id="btn-random" title="Random outfit">🎲</button>
+        <button id="btn-reset" title="Start over">↺</button>
       </div>
+    </header>
 
-      <div id="edit-panel" hidden>
-        <div class="ep-row">
-          <button id="ep-prev" title="Previous item">◀</button>
-          <span id="ep-name"></span>
-          <button id="ep-next" title="Next item">▶</button>
-        </div>
-        <div class="ep-row">
-          <button data-act="left" title="Move left">←</button>
-          <button data-act="up" title="Move up">↑</button>
-          <button data-act="down" title="Move down">↓</button>
-          <button data-act="right" title="Move right">→</button>
-          <button data-act="rotl" title="Rotate left">⟲</button>
-          <button data-act="rotr" title="Rotate right">⟳</button>
-          <button data-act="smaller" title="Smaller">➖</button>
-          <button data-act="bigger" title="Bigger">➕</button>
-        </div>
-        <div class="ep-row">
-          <button id="ep-reset">Reset item</button>
-          <button id="ep-save">💾 Save all</button>
-        </div>
-        <div id="ep-status"></div>
-      </div>
-    </section>
-  </main>
+    <nav id="tabs"></nav>
 
-  <script src="assets/png/manifest.js?v=2026-07-08-172937"></script>
-  <script src="png-app.js?v=2026-07-08-172937"></script>
+    <main>
+      <div id="items"></div>
+
+      <section id="stage">
+        <div id="doll-area">
+          <div id="pdoll">
+            <img class="base" src="assets/png/base-doll.png" alt="doll" />
+          </div>
+        </div>
+
+        <div id="edit-panel" hidden>
+          <div class="ep-row">
+            <button id="ep-prev" title="Previous item">◀</button>
+            <span id="ep-name"></span>
+            <button id="ep-next" title="Next item">▶</button>
+          </div>
+          <div class="ep-row">
+            <button data-act="left" title="Move left">←</button>
+            <button data-act="up" title="Move up">↑</button>
+            <button data-act="down" title="Move down">↓</button>
+            <button data-act="right" title="Move right">→</button>
+            <button data-act="rotl" title="Rotate left">⟲</button>
+            <button data-act="rotr" title="Rotate right">⟳</button>
+            <button data-act="smaller" title="Smaller">➖</button>
+            <button data-act="bigger" title="Bigger">➕</button>
+          </div>
+          <div class="ep-row">
+            <button id="ep-reset">Reset item</button>
+            <button id="ep-save">💾 Save all</button>
+          </div>
+          <div id="ep-status"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/png/manifest.js?v=2026-07-08-174753"></script>
+  <script src="png-app.js?v=2026-07-08-174753"></script>
 </body>
 </html>
