@@ -26,14 +26,15 @@ body {
   -webkit-user-select: none;
 }
 
-/* Locked to the target iPhone's viewport ratio (390x844) so the layout
-   looks identical everywhere we test it, not just on that one device —
-   we only deploy for this ratio for now. Width is derived from
-   `aspect-ratio` (auto height) so it's always exactly 390:844, whether
-   the surrounding window is wide+short or narrow+tall. */
+/* Real phones don't all share one exact ratio (e.g. 390x844 vs 393x852),
+   so we always fill the full screen (no aspect-ratio lock, no letterbox
+   bars) — on any phone-width screen #app-frame is simply 100dvh tall at
+   full width. The max-width only kicks in on windows wider than a phone
+   (e.g. testing on a Mac), purely so it doesn't stretch edge to edge. */
 #app-frame {
-  width: min(100vw, calc(100dvh * 390 / 844));
-  aspect-ratio: 390 / 844;
+  width: 100%;
+  max-width: 430px;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
