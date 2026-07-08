@@ -125,9 +125,9 @@ window.DOLL_MANIFEST = {
   },
   "thigh-strap": {
     "x": 310,
-    "y": 723,
+    "y": 727,
     "w": 181,
-    "h": 267
+    "h": 263
   },
   "goth-top": {
     "x": 251,

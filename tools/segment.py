@@ -1,9 +1,11 @@
 """Cut garments out of reference images with high-quality edges.
 
 Pipeline (per item):
-  1. HQ-SAM (syscv-community/sam-hq-vit-base) with point prompts -> best mask.
-     HQ-SAM is a SAM upgrade trained on 44K fine-grained masks for much
-     better boundaries. Falls back to facebook/sam-vit-base if unavailable.
+  1. SAM (facebook/sam-vit-base) with point prompts -> best mask. (HQ-SAM
+     was tried for sharper boundaries but its transformers port returns
+     masks that ignore the prompt points entirely — see load_sam() — so
+     don't retry it; edge quality comes from the ViTMatte pass below, not
+     the SAM mask itself.)
   2. Mask cleanup:
      - drop "island" components that contain none of the prompt points
      - fill interior holes smaller than HOLE_MAX_FRACTION of the mask
@@ -41,6 +43,19 @@ DEBUG_OUT = os.path.join(OUT, "debug")
 ERODE_PX = 5        # trimap sure-foreground shrink
 DILATE_PX = 7       # trimap unknown-band growth
 HOLE_MAX_FRACTION = 0.02  # holes smaller than this fraction of mask area get filled
+
+# Every CONFIG "src" reference image is 1086x1448, but that canvas has huge
+# empty margins (even the widest outfit, the lolita dress, only ever uses
+# x177-853 / y23-1433) — fitting that whole canvas on a narrow phone screen
+# left the doll tiny. The shared canvas the manifest/game actually use is
+# CROPPED to this window: every item's recorded x/y is translated by
+# -CANVAS_OFFSET, and base-doll.png's own output is cropped to CANVAS_SIZE.
+# This crop is baked in here (not just done once by hand) so it can never be
+# silently undone by re-running an existing item or regenerating base-doll —
+# both would otherwise reset the canvas back to the full, uncropped 1086x1448
+# and misplace whatever was just re-cut.
+CANVAS_OFFSET = (177, 23)
+CANVAS_SIZE = (677, 1411)
 MATTE_MARGIN = 64   # context around the garment for ViTMatte
 
 CONFIG = [
@@ -410,13 +425,16 @@ def main():
     if os.path.exists(manifest_path):
         with open(manifest_path) as f:
             manifest = json.load(f)
+    # fixed constant, NOT derived from whatever source image happens to be
+    # loaded below — every "src" is the same native 1086x1448 reference
+    # canvas; CANVAS_SIZE is that canvas cropped to its used content bounds
+    manifest["canvas"] = {"width": CANVAS_SIZE[0], "height": CANVAS_SIZE[1]}
 
     for group in CONFIG:
         wanted = {n: s for n, s in group["items"].items() if not only or n in only}
         if not wanted:
             continue
         image = Image.open(os.path.join(ROOT, group["src"])).convert("RGB")
-        manifest["canvas"] = {"width": image.width, "height": image.height}
 
         mask_cache = {}
 
@@ -434,7 +452,10 @@ def main():
             rgba = np.array(image.convert("RGBA"))
             rgba[..., 3] = a
             Image.fromarray(rgba).crop((px0, py0, px1 + 1, py1 + 1)).save(f"{OUT}/{out_name}.png")
-            entry = {"x": px0, "y": py0, "w": px1 - px0 + 1, "h": py1 - py0 + 1}
+            entry = {
+                "x": px0 - CANVAS_OFFSET[0], "y": py0 - CANVAS_OFFSET[1],
+                "w": px1 - px0 + 1, "h": py1 - py0 + 1,
+            }
             if old_adjust:
                 entry["adjust"] = old_adjust
             return entry
@@ -482,7 +503,9 @@ def main():
             elif spec.get("full_canvas"):
                 rgba = np.array(image.convert("RGBA"))
                 rgba[..., 3] = alpha
-                Image.fromarray(rgba).save(f"{OUT}/{name}.png")
+                ox, oy = CANVAS_OFFSET
+                cw, ch = CANVAS_SIZE
+                Image.fromarray(rgba).crop((ox, oy, ox + cw, oy + ch)).save(f"{OUT}/{name}.png")
             else:
                 old_adjust = manifest.get(name, {}).get("adjust")
                 manifest[name] = save_crop(alpha, name, old_adjust)
