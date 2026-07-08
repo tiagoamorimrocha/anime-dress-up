@@ -61,42 +61,39 @@ main {
   min-height: 0;
 }
 
-/* ---- left panel ---- */
-
-#panel {
-  width: 34%;
-  max-width: 190px;
-  min-width: 130px;
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  border-right: 2px solid #ffd6e0;
-}
+/* ---- category tabs: horizontal strip under the header ---- */
 
 #tabs {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
-  padding: 6px;
+  flex: none;
+  display: flex;
+  gap: 3px;
+  padding: 5px 6px;
+  background: #fff;
   border-bottom: 2px solid #ffd6e0;
 }
 
 #tabs button {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
+  gap: 0;
   border: 2px solid #eee;
   background: #fff;
-  border-radius: 10px;
-  padding: 4px 2px;
-  font-size: 1.1rem;
+  border-radius: 9px;
+  padding: 3px 1px;
+  font-size: 1rem;
   cursor: pointer;
 }
 
 #tabs button small {
-  font-size: 0.55rem;
+  font-size: 0.48rem;
   color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 #tabs button.active {
@@ -104,25 +101,28 @@ main {
   background: #ffe3ec;
 }
 
+/* ---- left item column: thin, icons only ---- */
+
 #items {
-  flex: 1;
+  flex: none;
+  width: 68px;
   overflow-y: auto;
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 6px;
-  padding: 8px;
-  align-content: start;
+  padding: 8px 6px;
+  background: #fff;
+  border-right: 2px solid #ffd6e0;
 }
 
 .item {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
   border: 2px solid #eee;
   background: #fafafa;
-  border-radius: 12px;
-  padding: 4px 8px;
+  border-radius: 10px;
+  padding: 4px;
   cursor: pointer;
 }
 
@@ -133,9 +133,8 @@ main {
 
 .item svg,
 .item .none-thumb {
-  flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
+  width: 100%;
+  height: 48px;
 }
 
 .item .none-thumb {
@@ -144,12 +143,6 @@ main {
   justify-content: center;
   font-size: 1.4rem;
   color: #bbb;
-}
-
-.item span {
-  font-size: 0.68rem;
-  color: #777;
-  text-align: left;
 }
 
 /* ---- stage ---- */
@@ -188,9 +181,8 @@ main {
 }
 
 .item img.thumb {
-  flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
+  width: 100%;
+  height: 48px;
   object-fit: contain;
 }
 

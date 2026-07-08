@@ -425,11 +425,12 @@ function renderItems() {
   for (const item of entries) {
     const btn = document.createElement("button");
     btn.className = "item" + (outfit[cat.id] === item.id ? " selected" : "");
+    btn.title = item.name;
     if (item.id === "none") {
-      btn.innerHTML = `<div class="none-thumb">🚫</div><span>None</span>`;
+      btn.innerHTML = `<div class="none-thumb">🚫</div>`;
     } else {
       const artwork = item.svg ?? `${RAINBOW_DEFS}<path d="${item.back}" fill="${item.color}"/><ellipse cx="150" cy="96" rx="47" ry="49" fill="${SKIN}"/><path d="${item.front}" fill="${item.color}"/>`;
-      btn.innerHTML = `<svg viewBox="${cat.preview}" xmlns="http://www.w3.org/2000/svg">${artwork}</svg><span>${item.name}</span>`;
+      btn.innerHTML = `<svg viewBox="${cat.preview}" xmlns="http://www.w3.org/2000/svg">${artwork}</svg>`;
     }
     btn.addEventListener("click", () => selectItem(cat.id, item.id));
     itemsEl.appendChild(btn);

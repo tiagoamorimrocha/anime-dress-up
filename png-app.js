@@ -248,10 +248,11 @@ function renderItems() {
   for (const item of entries) {
     const btn = document.createElement("button");
     btn.className = "item" + (outfit[cat.id] === item.id ? " selected" : "");
+    btn.title = item.name;
     if (item.id === "none") {
-      btn.innerHTML = `<div class="none-thumb">🚫</div><span>None</span>`;
+      btn.innerHTML = `<div class="none-thumb">🚫</div>`;
     } else {
-      btn.innerHTML = `<img class="thumb" src="${ASSET_DIR}/${item.id}.png" alt=""><span>${item.name}</span>`;
+      btn.innerHTML = `<img class="thumb" src="${ASSET_DIR}/${item.id}.png" alt="${item.name}">`;
     }
     btn.addEventListener("click", () => {
       outfit[cat.id] = item.id;
