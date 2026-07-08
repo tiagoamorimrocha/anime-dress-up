@@ -2,6 +2,7 @@
   "name": "Dress Up!",
   "short_name": "Dress Up!",
   "start_url": ".",
+  "scope": ".",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#fff0f5",

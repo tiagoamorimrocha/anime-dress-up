@@ -5,6 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
   <title>Dress Up! — Anime</title>
 
+  <!-- Cache-busting: the standalone iOS home-screen app stays suspended
+       between opens instead of re-fetching this page, so a new deploy
+       otherwise never shows up. version.json is bumped by
+       tools/bump_version.py on every deploy; when it changes we force a
+       fresh reload (cache-busted URL, so it can't be served from cache). -->
+  <script>
+    (function () {
+      var KEY = "dressup-app-version";
+      function checkVersion() {
+        fetch("version.json?_=" + Date.now(), { cache: "no-store" })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            var seen = localStorage.getItem(KEY);
+            if (seen && seen !== data.version) {
+              localStorage.setItem(KEY, data.version);
+              location.replace(location.pathname + "?_=" + Date.now());
+            } else if (!seen) {
+              localStorage.setItem(KEY, data.version);
+            }
+          })
+          .catch(function () {});
+      }
+      checkVersion();
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) checkVersion();
+      });
+    })();
+  </script>
+
   <!-- iOS full-screen web app -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -14,7 +43,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="manifest" href="manifest.json" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2026-07-08-145302" />
 </head>
 <body>
   <header>
@@ -65,7 +94,7 @@
     </section>
   </main>
 
-  <script src="assets/png/manifest.js"></script>
-  <script src="png-app.js"></script>
+  <script src="assets/png/manifest.js?v=2026-07-08-145302"></script>
+  <script src="png-app.js?v=2026-07-08-145302"></script>
 </body>
 </html>
