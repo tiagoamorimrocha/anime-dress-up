@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dress-up",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["tools/dev_server.py", "8437"],
+      "port": 8437
+    }
+  ]
+}

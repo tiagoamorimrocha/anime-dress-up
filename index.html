@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <title>Dress Up!</title>
+
+  <!-- iOS full-screen web app -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Dress Up!" />
+  <meta name="theme-color" content="#ffd6e0" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.json" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>✨ Dress Up! ✨</h1>
+    <div class="actions">
+      <a class="mode-link" href="anime.html" title="Anime mode">🎨</a>
+      <button id="btn-random" title="Random outfit">🎲</button>
+      <button id="btn-reset" title="Start over">↺</button>
+    </div>
+  </header>
+
+  <main>
+    <aside id="panel">
+      <nav id="tabs"></nav>
+      <div id="items"></div>
+    </aside>
+
+    <section id="stage">
+      <svg id="doll" viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg"></svg>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
