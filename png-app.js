@@ -159,7 +159,12 @@ function saveDraft() {
 
 function defaultOutfit() {
   const o = {};
-  for (const cat of WARDROBE) o[cat.id] = cat.items[0].id; // start dressed
+  for (const cat of WARDROBE) o[cat.id] = "none";
+  o.hair = "blonde-hair";
+  o.top = "uniform-top";
+  o.skirt = "uniform-skirt";
+  o.socks = "leg-warmers";
+  o.shoes = "loafers";
   return o;
 }
 
@@ -171,6 +176,10 @@ function loadOutfit() {
       const id = saved?.[cat.id];
       if (id === "none" && cat.none) o[cat.id] = "none";
       else if (cat.items.some((i) => i.id === id)) o[cat.id] = id;
+    }
+    if (o.dress !== "none") {
+      o.top = "none";
+      o.skirt = "none";
     }
     return o;
   } catch {
@@ -200,31 +209,48 @@ function sizeDoll() {
 }
 window.addEventListener("resize", sizeDoll);
 
-function renderDoll() {
-  pdoll.querySelectorAll("img.layer").forEach((el) => el.remove());
+function appendOutfitLayers(host, wornOutfit, editable = false) {
   const { width: cw, height: ch } = manifest.canvas;
   for (const layerId of LAYER_ORDER) {
-    const itemId = outfit[layerId];
+    const itemId = wornOutfit[layerId];
     if (itemId === "none" || !manifest[itemId]) continue;
-    for (const { target, src, box } of partsOf(itemId)) {
-      const adj = adjustOf(target);
+    for (const { target: pieceTarget, src, box } of partsOf(itemId)) {
+      const adj = adjustOf(pieceTarget);
       const w = box.w * adj.scale;
       const h = box.h * adj.scale;
       const x = box.x + adj.dx + (box.w - w) / 2; // scale around the piece's center
       const y = box.y + adj.dy + (box.h - h) / 2;
       const img = document.createElement("img");
-      img.className = "layer" + (editMode && target === editTarget ? " editing" : "");
+      img.className = "layer" + (editable && editMode && pieceTarget === editTarget ? " editing" : "");
       img.src = src;
       img.alt = "";
-      img.dataset.item = target;
+      img.dataset.item = pieceTarget;
       img.draggable = false;
       img.style.left = (x / cw) * 100 + "%";
       img.style.top = (y / ch) * 100 + "%";
       img.style.width = (w / cw) * 100 + "%";
       img.style.transform = adj.rot ? `rotate(${adj.rot}deg)` : "";
-      pdoll.appendChild(img);
+      host.appendChild(img);
     }
   }
+}
+
+function renderDoll() {
+  pdoll.querySelectorAll("img.layer").forEach((el) => el.remove());
+  appendOutfitLayers(pdoll, outfit, true);
+}
+
+function renderAnimeSnapshot(container, wornOutfit) {
+  const snapshot = document.createElement("div");
+  snapshot.className = "competition-png-doll";
+  const base = document.createElement("img");
+  base.className = "base";
+  base.src = `${ASSET_DIR}/base-doll.png`;
+  base.alt = "";
+  base.draggable = false;
+  snapshot.appendChild(base);
+  appendOutfitLayers(snapshot, wornOutfit);
+  container.replaceChildren(snapshot);
 }
 
 /* ---- panel rendering ---- */
@@ -235,7 +261,10 @@ function renderTabs() {
   tabsEl.innerHTML = "";
   for (const cat of WARDROBE) {
     const btn = document.createElement("button");
+    btn.type = "button";
     btn.className = cat.id === activeCategory ? "active" : "";
+    btn.setAttribute("aria-label", cat.name);
+    btn.setAttribute("aria-pressed", String(cat.id === activeCategory));
     btn.innerHTML = `${cat.emoji}<small>${cat.name}</small>`;
     btn.addEventListener("click", () => {
       activeCategory = cat.id;
@@ -253,8 +282,11 @@ function renderItems() {
   const entries = cat.none ? [{ id: "none", name: "None" }, ...cat.items] : cat.items;
   for (const item of entries) {
     const btn = document.createElement("button");
+    btn.type = "button";
     btn.className = "item" + (outfit[cat.id] === item.id ? " selected" : "");
     btn.title = item.name;
+    btn.setAttribute("aria-label", item.name);
+    btn.setAttribute("aria-pressed", String(outfit[cat.id] === item.id));
     if (item.id === "none") {
       btn.innerHTML = `<div class="none-thumb">🚫</div>`;
     } else {
@@ -291,12 +323,15 @@ document.getElementById("btn-random").addEventListener("click", () => {
     const pool = cat.none ? [{ id: "none" }, ...cat.items] : cat.items;
     outfit[cat.id] = pool[Math.floor(Math.random() * pool.length)].id;
   }
-  // a dress can't be worn with a top or skirt
-  if (outfit.dress !== "none" && Math.random() < 0.5) {
+  // Always make a complete look while preserving dress/separates exclusivity.
+  if (Math.random() < 0.35) {
+    outfit.dress = WARDROBE.find((cat) => cat.id === "dress").items[0].id;
     outfit.top = "none";
     outfit.skirt = "none";
   } else {
     outfit.dress = "none";
+    outfit.top = pickAnime(WARDROBE.find((cat) => cat.id === "top").items).id;
+    outfit.skirt = pickAnime(WARDROBE.find((cat) => cat.id === "skirt").items).id;
   }
   saveOutfit();
   renderDoll();
@@ -475,6 +510,71 @@ for (const ev of ["pointerup", "pointercancel"]) {
   pdoll.addEventListener(ev, () => { drag = null; });
 }
 
+/* ---- shared challenge / competition adapter ---- */
+const ANIME_RIVAL_PRESETS = {
+  wedding: [
+    { hair: "blonde-hair", dress: "lolita-dress", socks: "frilly-socks", shoes: "mary-janes" },
+    { hair: "gradient-hair", dress: "lolita-dress", socks: "frilly-socks", shoes: "mary-janes", accessory: "thigh-strap" },
+    { hair: "purple-hair", top: "turquoise-top", skirt: "turquoise-skirt", jacket: "turquoise-jacket", shoes: "turquoise-boots" },
+  ],
+  "school-dance": [
+    { hair: "purple-hair", top: "punk-top", skirt: "star-skirt", jacket: "star-jacket", socks: "frilly-socks", shoes: "mary-janes" },
+    { hair: "turquoise-hair", top: "turquoise-top", skirt: "turquoise-skirt", jacket: "turquoise-jacket", shoes: "turquoise-boots", accessory: "turquoise-garter" },
+    { hair: "gradient-hair", dress: "lolita-dress", socks: "frilly-socks", shoes: "mary-janes" },
+  ],
+  "fashion-show": [
+    { hair: "punk-buns", top: "punk-top", skirt: "punk-skirt", jacket: "punk-jacket", shoes: "goth-boots", accessory: "thigh-strap" },
+    { hair: "goth-hair", top: "goth-top", skirt: "goth-skirt", jacket: "goth-jacket", shoes: "goth-boots", accessory: "thigh-strap" },
+    { hair: "turquoise-hair", top: "turquoise-top", skirt: "turquoise-skirt", jacket: "turquoise-jacket", shoes: "turquoise-boots", accessory: "turquoise-garter" },
+  ],
+  "berry-picking": [
+    { hair: "chinese-hair", top: "chinese-top", skirt: "chinese-skirt", shoes: "chinese-shoes" },
+    { hair: "blonde-hair", top: "uniform-top", skirt: "chinese-skirt", socks: "leg-warmers", shoes: "chinese-shoes" },
+    { hair: "red-buns", top: "chinese-top", skirt: "uniform-skirt", socks: "leg-warmers", shoes: "loafers" },
+  ],
+};
+
+const ANIME_SCENARIO_FAVES = {
+  wedding: ["lolita-dress", "mary-janes", "frilly-socks", "blonde-hair", "gradient-hair", "purple-hair", "turquoise-top", "turquoise-skirt"],
+  "school-dance": ["star-skirt", "star-jacket", "turquoise-top", "turquoise-skirt", "turquoise-jacket", "lolita-dress", "mary-janes", "frilly-socks", "gradient-hair", "purple-hair"],
+  "fashion-show": ["punk-top", "punk-skirt", "punk-jacket", "punk-buns", "goth-top", "goth-skirt", "goth-jacket", "goth-hair", "turquoise-top", "turquoise-skirt", "turquoise-jacket", "turquoise-hair", "star-skirt", "star-jacket", "goth-boots", "turquoise-boots"],
+  "berry-picking": ["chinese-top", "chinese-skirt", "chinese-shoes", "chinese-hair", "blonde-hair", "red-buns", "uniform-top", "uniform-skirt", "leg-warmers", "loafers"],
+};
+
+function pickAnime(values) {
+  return values[Math.floor(Math.random() * values.length)];
+}
+
+function makeAnimeRival(scenario) {
+  const rival = {};
+  for (const cat of WARDROBE) rival[cat.id] = "none";
+  Object.assign(rival, pickAnime(ANIME_RIVAL_PRESETS[scenario.id]));
+  return rival;
+}
+
+function scoreAnimeOutfit(wornOutfit, scenario) {
+  const selected = Object.values(wornOutfit).filter((id) => id && id !== "none");
+  const favorites = ANIME_SCENARIO_FAVES[scenario.id] || [];
+  const themeMatches = selected.filter((id) => favorites.includes(id)).length;
+  const isDressed = wornOutfit.dress !== "none"
+    || (wornOutfit.top !== "none" && wornOutfit.skirt !== "none");
+  const collectionRoots = ["uniform", "punk", "goth", "turquoise", "chinese", "star"];
+  const collectionBonus = collectionRoots.some((root) => selected.filter((id) => id.startsWith(root)).length >= 2) ? 0.8 : 0;
+  let score = 3.4 + themeMatches * 0.55 + collectionBonus + (isDressed ? 0.9 : -1.8);
+  if (wornOutfit.shoes !== "none") score += 0.35;
+  score += Math.random() * 2.7 - 1.15;
+  return Math.max(1, Math.min(10, Math.round(score)));
+}
+
+function leaveEditMode() {
+  if (!editMode) return;
+  editMode = false;
+  drag = null;
+  renderEditPanel();
+  sizeDoll();
+  renderDoll();
+}
+
 /* ---- go! ----
    manifest comes from a plain <script> (assets/png/manifest.js), not
    fetch() — opening the game via file:// (e.g. double-clicking anime.html)
@@ -488,3 +588,12 @@ renderDoll();
 renderTabs();
 renderItems();
 renderEditPanel();
+
+window.DressUpCompetition?.start({
+  mode: "anime",
+  getOutfit: () => ({ ...outfit }),
+  makeRival: makeAnimeRival,
+  renderSnapshot: renderAnimeSnapshot,
+  scoreOutfit: scoreAnimeOutfit,
+  beforeCompetition: leaveEditMode,
+});

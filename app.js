@@ -380,22 +380,28 @@ function getCategory(id) {
 /* ---- doll rendering ---- */
 const doll = document.getElementById("doll");
 
-function renderDoll() {
-  const hair = getCategory("hair").items.find((i) => i.id === outfit.hair);
+function buildDollMarkup(wornOutfit, namespace = "main") {
+  const hair = getCategory("hair").items.find((i) => i.id === wornOutfit.hair);
+  const gradientId = `${RAINBOW_ID}-${namespace}`;
+  const withGradient = (markup) => markup.replaceAll(RAINBOW_ID, gradientId);
 
-  let svg = RAINBOW_DEFS;
+  let svg = withGradient(RAINBOW_DEFS);
   svg += `<g id="base-limbs">${BASE_LIMBS}</g>`;
-  if (hair) svg += `<g data-layer="hair-back"><path d="${hair.back}" fill="${hair.color}"/></g>`;
+  if (hair) svg += `<g data-layer="hair-back"><path d="${hair.back}" fill="${withGradient(hair.color)}"/></g>`;
   svg += `<g id="base-head">${BASE_HEAD}</g>`;
-  if (hair) svg += `<g data-layer="hair-front"><path d="${hair.front}" fill="${hair.color}"/></g>`;
+  if (hair) svg += `<g data-layer="hair-front"><path d="${hair.front}" fill="${withGradient(hair.color)}"/></g>`;
   svg += `<g id="base-underwear">${BASE_UNDERWEAR}</g>`;
 
   for (const layerId of LAYER_ORDER) {
     const cat = getCategory(layerId);
-    const item = cat.items.find((i) => i.id === outfit[layerId]);
-    if (item) svg += `<g data-layer="${layerId}">${item.svg}</g>`;
+    const item = cat.items.find((i) => i.id === wornOutfit[layerId]);
+    if (item) svg += `<g data-layer="${layerId}">${withGradient(item.svg)}</g>`;
   }
-  doll.innerHTML = svg;
+  return svg;
+}
+
+function renderDoll() {
+  doll.innerHTML = buildDollMarkup(outfit);
 }
 
 /* ---- panel rendering ---- */
@@ -406,7 +412,10 @@ function renderTabs() {
   tabsEl.innerHTML = "";
   for (const cat of CATEGORIES) {
     const btn = document.createElement("button");
+    btn.type = "button";
     btn.className = cat.id === activeCategory ? "active" : "";
+    btn.setAttribute("aria-label", cat.name);
+    btn.setAttribute("aria-pressed", String(cat.id === activeCategory));
     btn.innerHTML = `${cat.emoji}<small>${cat.name}</small>`;
     btn.addEventListener("click", () => {
       activeCategory = cat.id;
@@ -424,8 +433,11 @@ function renderItems() {
   const entries = cat.none ? [{ id: "none", name: "None" }, ...cat.items] : cat.items;
   for (const item of entries) {
     const btn = document.createElement("button");
+    btn.type = "button";
     btn.className = "item" + (outfit[cat.id] === item.id ? " selected" : "");
     btn.title = item.name;
+    btn.setAttribute("aria-label", item.name);
+    btn.setAttribute("aria-pressed", String(outfit[cat.id] === item.id));
     if (item.id === "none") {
       btn.innerHTML = `<div class="none-thumb">🚫</div>`;
     } else {
@@ -474,7 +486,85 @@ document.getElementById("btn-random").addEventListener("click", () => {
   renderItems();
 });
 
+/* ---- shared challenge / competition adapter ---- */
+const DOODLE_RIVAL_PRESETS = {
+  wedding: [
+    { dress: "princess", hat: "flowers", shoes: "flats" },
+    { dress: "party", hat: "bow", shoes: "flats" },
+    { dress: "rainbow-princess", hat: "rainbow-bow", shoes: "rainbow" },
+  ],
+  "school-dance": [
+    { dress: "party", hat: "bow", shoes: "flats" },
+    { dress: "sundress", hat: "flowers", shoes: "sneakers" },
+    { dress: "rainbow", hat: "rainbow-bow", shoes: "rainbow" },
+  ],
+  "fashion-show": [
+    { dress: "rainbow-princess", hat: "rainbow-witch", shoes: "rainbow" },
+    { dress: "princess", hat: "witch", shoes: "boots" },
+    { dress: "none", shirt: "rainbow", pants: "rainbow", hat: "rainbow-bow", shoes: "boots" },
+  ],
+  "berry-picking": [
+    { dress: "none", shirt: "tee-yellow", pants: "shorts", hat: "cap", shoes: "sneakers" },
+    { dress: "none", shirt: "tee-white", pants: "jeans", hat: "flowers", shoes: "boots" },
+    { dress: "sundress", hat: "flowers", shoes: "sneakers" },
+  ],
+};
+
+const DOODLE_SCENARIO_FAVES = {
+  wedding: ["dress:princess", "dress:party", "dress:rainbow-princess", "hat:flowers", "hat:bow", "shoes:flats", "hair:long"],
+  "school-dance": ["dress:party", "dress:sundress", "dress:rainbow", "hat:bow", "hat:rainbow-bow", "shoes:flats", "shoes:rainbow"],
+  "fashion-show": ["dress:rainbow-princess", "dress:rainbow", "shirt:rainbow", "pants:rainbow", "hat:witch", "hat:rainbow-witch", "shoes:boots", "eyes:stars"],
+  "berry-picking": ["dress:sundress", "shirt:tee-yellow", "shirt:tee-white", "pants:shorts", "pants:jeans", "hat:cap", "hat:flowers", "shoes:sneakers", "shoes:boots"],
+};
+
+function pickOne(values) {
+  return values[Math.floor(Math.random() * values.length)];
+}
+
+function makeDoodleRival(scenario) {
+  const rival = defaultOutfit();
+  for (const cat of CATEGORIES) {
+    if (cat.none) rival[cat.id] = "none";
+  }
+  Object.assign(rival, pickOne(DOODLE_RIVAL_PRESETS[scenario.id]));
+  rival.hair = pickOne(getCategory("hair").items).id;
+  rival.eyes = pickOne(getCategory("eyes").items).id;
+  rival.mouth = pickOne(getCategory("mouth").items).id;
+  return rival;
+}
+
+function scoreDoodleOutfit(wornOutfit, scenario) {
+  const choices = Object.entries(wornOutfit).map(([category, id]) => `${category}:${id}`);
+  const favorites = DOODLE_SCENARIO_FAVES[scenario.id] || [];
+  const themeMatches = choices.filter((choice) => favorites.includes(choice)).length;
+  const isDressed = wornOutfit.dress !== "none"
+    || (wornOutfit.shirt !== "none" && wornOutfit.pants !== "none");
+  const hasShoes = wornOutfit.shoes !== "none";
+  const statementPieces = choices.filter((choice) => choice.includes("rainbow") || choice.includes("princess") || choice.includes("witch")).length;
+  let score = 3.8 + themeMatches * 0.7 + (isDressed ? 0.8 : -1.5) + (hasShoes ? 0.35 : -0.5);
+  if (scenario.id === "fashion-show") score += Math.min(statementPieces, 2) * 0.45;
+  score += Math.random() * 2.6 - 1.15;
+  return Math.max(1, Math.min(10, Math.round(score)));
+}
+
+function renderDoodleSnapshot(container, wornOutfit) {
+  const snapshot = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  snapshot.classList.add("competition-doll-svg");
+  snapshot.setAttribute("viewBox", "0 0 300 600");
+  snapshot.setAttribute("aria-hidden", "true");
+  snapshot.innerHTML = buildDollMarkup(wornOutfit, `snapshot-${Math.random().toString(36).slice(2)}`);
+  container.replaceChildren(snapshot);
+}
+
 /* ---- go! ---- */
 renderDoll();
 renderTabs();
 renderItems();
+
+window.DressUpCompetition?.start({
+  mode: "doodle",
+  getOutfit: () => ({ ...outfit }),
+  makeRival: makeDoodleRival,
+  renderSnapshot: renderDoodleSnapshot,
+  scoreOutfit: scoreDoodleOutfit,
+});
