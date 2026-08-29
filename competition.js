@@ -248,6 +248,11 @@
       refs.competitionScenario.textContent = `${scenario.emoji} ${scenario.label}`;
     }
 
+    function setChallengeChipVisible(visible) {
+      refs.chip.hidden = !visible;
+      if (refs.brandTitle) refs.brandTitle.hidden = visible;
+    }
+
     function chooseScenario(excludedId) {
       const choices = SCENARIOS.filter((scenario) => scenario.id !== excludedId);
       state.scenario = randomItem(choices.length ? choices : SCENARIOS);
@@ -265,7 +270,7 @@
       state.lastFocus = document.activeElement;
       refs.screen.hidden = true;
       refs.dialog.hidden = false;
-      refs.chip.hidden = true;
+      setChallengeChipVisible(false);
       refs.enterButton.hidden = true;
       refs.error.hidden = true;
       refs.stage.classList.remove("has-dressup-challenge", "is-competition-active");
@@ -279,7 +284,7 @@
       setPhase("dressing");
       refs.dialog.hidden = true;
       refs.screen.hidden = true;
-      refs.chip.hidden = false;
+      setChallengeChipVisible(true);
       refs.enterButton.hidden = false;
       refs.enterButton.disabled = false;
       refs.error.hidden = true;
@@ -527,7 +532,7 @@
       refs.screen.hidden = true;
       refs.enterButton.disabled = false;
       refs.enterButton.hidden = false;
-      refs.chip.hidden = false;
+      setChallengeChipVisible(true);
       refs.error.hidden = false;
       refs.error.textContent = "The competition could not start. Please try again.";
       refs.stage.classList.remove("is-competition-active");
@@ -615,15 +620,18 @@
   }
 
   function mountInterface(stage, frame) {
+    const chipHost = frame.querySelector("#header-title-slot") || stage;
     const ctaHost = frame.querySelector("#competition-cta-slot") || stage;
-    stage.insertAdjacentHTML("beforeend", `
+    chipHost.insertAdjacentHTML("beforeend", `
       <aside id="dressup-challenge-chip" class="dressup-challenge-chip" hidden>
         <span class="dressup-challenge-chip__emoji" data-challenge-emoji aria-hidden="true"></span>
         <span class="dressup-challenge-chip__copy">
           <small>Today’s challenge</small>
           <strong data-challenge-label></strong>
         </span>
-      </aside>
+      </aside>`);
+
+    stage.insertAdjacentHTML("beforeend", `
       <p id="dressup-competition-error" class="dressup-competition-error" role="alert" hidden></p>`);
 
     ctaHost.insertAdjacentHTML("beforeend", `
@@ -744,9 +752,10 @@
       scenarioHint: root.querySelector("[data-scenario-hint]"),
       rerollButton: root.querySelector('[data-action="reroll"]'),
       acceptButton: root.querySelector('[data-action="accept"]'),
-      chip: stage.querySelector("#dressup-challenge-chip"),
-      chipEmoji: stage.querySelector("[data-challenge-emoji]"),
-      chipLabel: stage.querySelector("[data-challenge-label]"),
+      brandTitle: chipHost.querySelector("h1"),
+      chip: chipHost.querySelector("#dressup-challenge-chip"),
+      chipEmoji: chipHost.querySelector("[data-challenge-emoji]"),
+      chipLabel: chipHost.querySelector("[data-challenge-label]"),
       enterButton: ctaHost.querySelector("#dressup-enter-competition"),
       error: stage.querySelector("#dressup-competition-error"),
       screen: root.querySelector(".competition-screen"),

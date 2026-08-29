@@ -56,9 +56,17 @@ header {
   min-height: 56px;
 }
 
-header h1 {
+#header-title-slot {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+#header-title-slot h1 {
   font-size: 1.1rem;
   color: #c9184a;
+  white-space: nowrap;
 }
 
 .actions button {
@@ -291,13 +299,12 @@ body.dressup-competition-open {
 }
 
 .dressup-challenge-chip {
-  position: absolute;
+  position: relative;
   z-index: 8;
-  top: 10px;
-  left: 50%;
-  max-width: calc(100% - 20px);
+  max-width: 100%;
+  min-width: 0;
   min-height: 38px;
-  transform: translateX(-50%);
+  transform: none;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -352,6 +359,11 @@ body.dressup-competition-open {
   line-height: 1.15;
 }
 
+.dressup-challenge-chip__copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .dressup-enter-competition {
   position: relative;
   z-index: 9;
@@ -397,24 +409,6 @@ body.dressup-competition-open {
   box-shadow: 0 6px 20px rgba(80, 20, 30, 0.15);
   font-size: 0.75rem;
   text-align: center;
-}
-
-#stage.has-dressup-challenge > #doll {
-  height: 86%;
-  transform: translateY(-1%);
-  transition: height 350ms ease, transform 350ms ease;
-}
-
-#stage.has-dressup-challenge #pdoll {
-  transform: translateY(-2%) scale(0.9);
-  transition: transform 350ms ease;
-}
-
-#stage.is-competition-active .dressup-challenge-chip,
-#stage.is-competition-active .dressup-enter-competition {
-  pointer-events: none;
-  opacity: 0;
-  transform: translateX(-50%) translateY(12px);
 }
 
 .dressup-competition {
@@ -1197,7 +1191,7 @@ body.dressup-competition-open {
 @keyframes game-fade-in { from { opacity: 0; } }
 @keyframes scenario-card-in { from { opacity: 0; transform: translateY(28px) scale(.97); } }
 @keyframes scenario-image-drift { to { transform: scale(1.045) translateY(-1.2%); } }
-@keyframes challenge-chip-in { from { opacity: 0; transform: translate(-50%, -12px); } }
+@keyframes challenge-chip-in { from { opacity: 0; transform: translateY(-8px); } }
 @keyframes competition-cta-in { from { opacity: 0; transform: translateY(18px) scale(.92); } }
 @keyframes competition-cta-glow { 50% { box-shadow: 0 12px 30px rgba(196,41,105,.52), 0 0 0 6px rgba(241,76,125,.09); } }
 @keyframes competition-panel-in { from { opacity: 0; transform: scale(1.025); } }
@@ -1242,7 +1236,7 @@ body.dressup-competition-open {
 
 @media (max-width: 350px) {
   header { padding-inline: 8px; }
-  header h1 { font-size: .94rem; }
+  #header-title-slot h1 { font-size: .94rem; }
   .actions button, .actions .mode-link { width: 40px; height: 40px; }
   .competition-screen__panel { padding-inline: 7px; }
   .competition-runway { gap: 5px; }
