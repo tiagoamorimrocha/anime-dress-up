@@ -36,7 +36,10 @@ const WARDROBE = [
   },
   {
     id: "dress", name: "Dresses", emoji: "👗", none: true,
-    items: [{ id: "lolita-dress", name: "Lolita Dress" }],
+    items: [
+      { id: "lolita-dress", name: "Lolita Dress" },
+      { id: "wedding-dress", name: "Wedding Dress" },
+    ],
   },
   {
     id: "skirt", name: "Skirts", emoji: "🩳", none: true,
@@ -325,7 +328,7 @@ document.getElementById("btn-random").addEventListener("click", () => {
   }
   // Always make a complete look while preserving dress/separates exclusivity.
   if (Math.random() < 0.35) {
-    outfit.dress = WARDROBE.find((cat) => cat.id === "dress").items[0].id;
+    outfit.dress = pickAnime(WARDROBE.find((cat) => cat.id === "dress").items).id;
     outfit.top = "none";
     outfit.skirt = "none";
   } else {
@@ -513,8 +516,8 @@ for (const ev of ["pointerup", "pointercancel"]) {
 /* ---- shared challenge / competition adapter ---- */
 const ANIME_RIVAL_PRESETS = {
   wedding: [
-    { hair: "blonde-hair", dress: "lolita-dress", socks: "frilly-socks", shoes: "mary-janes" },
-    { hair: "gradient-hair", dress: "lolita-dress", socks: "frilly-socks", shoes: "mary-janes", accessory: "thigh-strap" },
+    { hair: "blonde-hair", dress: "wedding-dress", shoes: "mary-janes" },
+    { hair: "gradient-hair", dress: "wedding-dress", shoes: "mary-janes" },
     { hair: "purple-hair", top: "turquoise-top", skirt: "turquoise-skirt", jacket: "turquoise-jacket", shoes: "turquoise-boots" },
   ],
   "school-dance": [
@@ -535,7 +538,7 @@ const ANIME_RIVAL_PRESETS = {
 };
 
 const ANIME_SCENARIO_FAVES = {
-  wedding: ["lolita-dress", "mary-janes", "frilly-socks", "blonde-hair", "gradient-hair", "purple-hair", "turquoise-top", "turquoise-skirt"],
+  wedding: ["wedding-dress", "lolita-dress", "mary-janes", "frilly-socks", "blonde-hair", "gradient-hair", "purple-hair", "turquoise-top", "turquoise-skirt"],
   "school-dance": ["star-skirt", "star-jacket", "turquoise-top", "turquoise-skirt", "turquoise-jacket", "lolita-dress", "mary-janes", "frilly-socks", "gradient-hair", "purple-hair"],
   "fashion-show": ["punk-top", "punk-skirt", "punk-jacket", "punk-buns", "goth-top", "goth-skirt", "goth-jacket", "goth-hair", "turquoise-top", "turquoise-skirt", "turquoise-jacket", "turquoise-hair", "star-skirt", "star-jacket", "goth-boots", "turquoise-boots"],
   "berry-picking": ["chinese-top", "chinese-skirt", "chinese-shoes", "chinese-hair", "blonde-hair", "red-buns", "uniform-top", "uniform-skirt", "leg-warmers", "loafers"],
