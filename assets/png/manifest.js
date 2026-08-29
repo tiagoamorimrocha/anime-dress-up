@@ -65,6 +65,12 @@ window.DOLL_MANIFEST = {
     "w": 647,
     "h": 959
   },
+  "floral-magic-dress": {
+    "x": 38,
+    "y": 311,
+    "w": 630,
+    "h": 833
+  },
   "frilly-socks": {
     "parts": {
       "left": {

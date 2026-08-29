@@ -43,7 +43,7 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="manifest" href="manifest.json" />
 
-  <link rel="stylesheet" href="styles.css?v=2026-08-29-185037" />
+  <link rel="stylesheet" href="styles.css?v=2026-08-29-202733" />
 </head>
 <body>
   <div id="app-frame">
@@ -62,41 +62,44 @@
     <main>
       <div id="items"></div>
 
-      <section id="stage">
-        <div id="doll-area">
-          <div id="pdoll">
-            <img class="base" src="assets/png/base-doll.png" alt="doll" />
+      <div class="stage-column">
+        <section id="stage">
+          <div id="doll-area">
+            <div id="pdoll">
+              <img class="base" src="assets/png/base-doll.png" alt="doll" />
+            </div>
           </div>
-        </div>
 
-        <div id="edit-panel" hidden>
-          <div class="ep-row">
-            <button id="ep-prev" title="Previous item">◀</button>
-            <span id="ep-name"></span>
-            <button id="ep-next" title="Next item">▶</button>
+          <div id="edit-panel" hidden>
+            <div class="ep-row">
+              <button id="ep-prev" title="Previous item">◀</button>
+              <span id="ep-name"></span>
+              <button id="ep-next" title="Next item">▶</button>
+            </div>
+            <div class="ep-row">
+              <button data-act="left" title="Move left">←</button>
+              <button data-act="up" title="Move up">↑</button>
+              <button data-act="down" title="Move down">↓</button>
+              <button data-act="right" title="Move right">→</button>
+              <button data-act="rotl" title="Rotate left">⟲</button>
+              <button data-act="rotr" title="Rotate right">⟳</button>
+              <button data-act="smaller" title="Smaller">➖</button>
+              <button data-act="bigger" title="Bigger">➕</button>
+            </div>
+            <div class="ep-row">
+              <button id="ep-reset">Reset item</button>
+              <button id="ep-save">💾 Save all</button>
+            </div>
+            <div id="ep-status"></div>
           </div>
-          <div class="ep-row">
-            <button data-act="left" title="Move left">←</button>
-            <button data-act="up" title="Move up">↑</button>
-            <button data-act="down" title="Move down">↓</button>
-            <button data-act="right" title="Move right">→</button>
-            <button data-act="rotl" title="Rotate left">⟲</button>
-            <button data-act="rotr" title="Rotate right">⟳</button>
-            <button data-act="smaller" title="Smaller">➖</button>
-            <button data-act="bigger" title="Bigger">➕</button>
-          </div>
-          <div class="ep-row">
-            <button id="ep-reset">Reset item</button>
-            <button id="ep-save">💾 Save all</button>
-          </div>
-          <div id="ep-status"></div>
-        </div>
-      </section>
+        </section>
+        <div id="competition-cta-slot" aria-live="off"></div>
+      </div>
     </main>
   </div>
 
-  <script src="competition.js?v=2026-08-29-185037"></script>
-  <script src="assets/png/manifest.js?v=2026-08-29-185037"></script>
-  <script src="png-app.js?v=2026-08-29-185037"></script>
+  <script src="competition.js?v=2026-08-29-202733"></script>
+  <script src="assets/png/manifest.js?v=2026-08-29-202733"></script>
+  <script src="png-app.js?v=2026-08-29-202733"></script>
 </body>
 </html>

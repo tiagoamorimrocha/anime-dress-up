@@ -196,6 +196,26 @@ main {
   overflow: hidden;
 }
 
+.stage-column {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(#ffeef5, #fff9e6);
+}
+
+#competition-cta-slot {
+  flex: none;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px 9px;
+  border-top: 2px solid rgba(255, 179, 198, 0.78);
+  background: rgba(255, 248, 243, 0.96);
+}
+
 #doll {
   height: 96%;
   max-width: 100%;
@@ -333,13 +353,11 @@ body.dressup-competition-open {
 }
 
 .dressup-enter-competition {
-  position: absolute;
+  position: relative;
   z-index: 9;
-  left: 50%;
-  bottom: max(12px, env(safe-area-inset-bottom));
   width: min(248px, calc(100% - 24px));
   min-height: 54px;
-  transform: translateX(-50%);
+  transform: none;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -363,7 +381,7 @@ body.dressup-competition-open {
 }
 
 .dressup-enter-competition:active {
-  transform: translateX(-50%) scale(0.97);
+  transform: scale(0.97);
 }
 
 .dressup-competition-error {
@@ -1180,7 +1198,7 @@ body.dressup-competition-open {
 @keyframes scenario-card-in { from { opacity: 0; transform: translateY(28px) scale(.97); } }
 @keyframes scenario-image-drift { to { transform: scale(1.045) translateY(-1.2%); } }
 @keyframes challenge-chip-in { from { opacity: 0; transform: translate(-50%, -12px); } }
-@keyframes competition-cta-in { from { opacity: 0; transform: translate(-50%, 24px) scale(.92); } }
+@keyframes competition-cta-in { from { opacity: 0; transform: translateY(18px) scale(.92); } }
 @keyframes competition-cta-glow { 50% { box-shadow: 0 12px 30px rgba(196,41,105,.52), 0 0 0 6px rgba(241,76,125,.09); } }
 @keyframes competition-panel-in { from { opacity: 0; transform: scale(1.025); } }
 @keyframes curtain-breathe { to { filter: brightness(1.12); } }

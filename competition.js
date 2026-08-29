@@ -20,6 +20,9 @@
   "use strict";
 
   const RIVAL_NAME = "Mika";
+  // Keep the competition encouraging: a themed player look should usually
+  // beat Mika's polished preset, while an off-theme outfit can still lose.
+  const PLAYER_SCORE_EDGE = 3.5;
 
   const SCENARIOS = Object.freeze([
     Object.freeze({
@@ -612,6 +615,7 @@
   }
 
   function mountInterface(stage, frame) {
+    const ctaHost = frame.querySelector("#competition-cta-slot") || stage;
     stage.insertAdjacentHTML("beforeend", `
       <aside id="dressup-challenge-chip" class="dressup-challenge-chip" hidden>
         <span class="dressup-challenge-chip__emoji" data-challenge-emoji aria-hidden="true"></span>
@@ -620,14 +624,16 @@
           <strong data-challenge-label></strong>
         </span>
       </aside>
+      <p id="dressup-competition-error" class="dressup-competition-error" role="alert" hidden></p>`);
+
+    ctaHost.insertAdjacentHTML("beforeend", `
       <button id="dressup-enter-competition" class="dressup-enter-competition" type="button" hidden aria-describedby="dressup-challenge-chip">
         <span class="dressup-enter-competition__icon" aria-hidden="true">🏆</span>
         <span class="dressup-enter-competition__copy">
           <strong>Enter Competition</strong>
           <small>Face your fashion rival</small>
         </span>
-      </button>
-      <p id="dressup-competition-error" class="dressup-competition-error" role="alert" hidden></p>`);
+      </button>`);
 
     frame.insertAdjacentHTML("beforeend", `
       <div id="dressup-competition" class="dressup-competition" data-phase="boot">
@@ -741,7 +747,7 @@
       chip: stage.querySelector("#dressup-challenge-chip"),
       chipEmoji: stage.querySelector("[data-challenge-emoji]"),
       chipLabel: stage.querySelector("[data-challenge-label]"),
-      enterButton: stage.querySelector("#dressup-enter-competition"),
+      enterButton: ctaHost.querySelector("#dressup-enter-competition"),
       error: stage.querySelector("#dressup-competition-error"),
       screen: root.querySelector(".competition-screen"),
       competitionBackdrop: root.querySelector(".competition-screen__backdrop"),
@@ -772,22 +778,19 @@
   function buildRounds(adapter, player, rival, scenario, judges) {
     const rounds = judges.map((judge) => ({
       judge,
-      playerScore: scoreFor(player, scenario, judge),
+      playerScore: scoreFor(player, scenario, judge, PLAYER_SCORE_EDGE),
       rivalScore: scoreFor(rival, scenario, judge),
     }));
 
     const totals = totalScores(rounds);
     if (totals.player === totals.rival) {
       const lastRound = rounds[rounds.length - 1];
-      const possibleScores = [];
-      for (let score = 1; score <= 10; score += 1) {
-        if (score !== lastRound.rivalScore) possibleScores.push(score);
-      }
-      lastRound.rivalScore = randomItem(possibleScores);
+      if (lastRound.playerScore < 10) lastRound.playerScore += 1;
+      else if (lastRound.rivalScore > 1) lastRound.rivalScore -= 1;
     }
     return rounds;
 
-    function scoreFor(snapshot, selectedScenario, judge) {
+    function scoreFor(snapshot, selectedScenario, judge, scoreEdge = 0) {
       let base;
       try {
         base = Number(adapter.scoreOutfit(snapshot, selectedScenario, judge));
@@ -797,7 +800,7 @@
       }
       if (!Number.isFinite(base)) base = randomInteger(4, 8);
       const jitter = randomInteger(-2, 2);
-      return clamp(Math.round(base + judge.generosity + jitter), 1, 10);
+      return clamp(Math.round(base + judge.generosity + scoreEdge + jitter), 1, 10);
     }
 
   }
