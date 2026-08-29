@@ -57,6 +57,7 @@ const WARDROBE = [
     id: "jacket", name: "Jackets", emoji: "🧥", none: true,
     items: [
       { id: "punk-jacket", name: "Punk Jacket" },
+      { id: "cyberpunk-jacket", name: "Cyberpunk Jacket" },
       { id: "star-jacket", name: "Star Jacket" },
       { id: "goth-jacket", name: "Goth Sleeves" },
       { id: "turquoise-jacket", name: "Turquoise Sleeves" },
@@ -528,6 +529,7 @@ const ANIME_RIVAL_PRESETS = {
     { hair: "gradient-hair", dress: "lolita-dress", socks: "frilly-socks", shoes: "mary-janes" },
   ],
   "fashion-show": [
+    { hair: "turquoise-hair", top: "black-top", skirt: "star-skirt", jacket: "cyberpunk-jacket", shoes: "turquoise-boots", accessory: "thigh-strap" },
     { hair: "punk-buns", top: "punk-top", skirt: "punk-skirt", jacket: "punk-jacket", shoes: "goth-boots", accessory: "thigh-strap" },
     { hair: "goth-hair", top: "goth-top", skirt: "goth-skirt", jacket: "goth-jacket", shoes: "goth-boots", accessory: "thigh-strap" },
     { hair: "turquoise-hair", top: "turquoise-top", skirt: "turquoise-skirt", jacket: "turquoise-jacket", shoes: "turquoise-boots", accessory: "turquoise-garter" },
@@ -542,7 +544,7 @@ const ANIME_RIVAL_PRESETS = {
 const ANIME_SCENARIO_FAVES = {
   wedding: ["floral-magic-dress", "wedding-dress", "lolita-dress", "mary-janes", "frilly-socks", "blonde-hair", "gradient-hair", "purple-hair", "turquoise-top", "turquoise-skirt"],
   "school-dance": ["floral-magic-dress", "star-skirt", "star-jacket", "turquoise-top", "turquoise-skirt", "turquoise-jacket", "lolita-dress", "mary-janes", "frilly-socks", "gradient-hair", "purple-hair"],
-  "fashion-show": ["floral-magic-dress", "punk-top", "punk-skirt", "punk-jacket", "punk-buns", "goth-top", "goth-skirt", "goth-jacket", "goth-hair", "turquoise-top", "turquoise-skirt", "turquoise-jacket", "turquoise-hair", "star-skirt", "star-jacket", "goth-boots", "turquoise-boots"],
+  "fashion-show": ["floral-magic-dress", "cyberpunk-jacket", "punk-top", "punk-skirt", "punk-jacket", "punk-buns", "goth-top", "goth-skirt", "goth-jacket", "goth-hair", "turquoise-top", "turquoise-skirt", "turquoise-jacket", "turquoise-hair", "star-skirt", "star-jacket", "goth-boots", "turquoise-boots"],
   "berry-picking": ["chinese-top", "chinese-skirt", "chinese-shoes", "chinese-hair", "blonde-hair", "red-buns", "uniform-top", "uniform-skirt", "leg-warmers", "loafers"],
 };
 

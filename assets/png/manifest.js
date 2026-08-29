@@ -105,6 +105,12 @@ window.DOLL_MANIFEST = {
     "w": 500,
     "h": 440
   },
+  "cyberpunk-jacket": {
+    "x": 131,
+    "y": 226,
+    "w": 450,
+    "h": 456
+  },
   "punk-top": {
     "x": 274,
     "y": 347,
