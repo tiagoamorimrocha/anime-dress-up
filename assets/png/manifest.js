@@ -280,5 +280,11 @@ window.DOLL_MANIFEST = {
     "y": 41,
     "w": 224,
     "h": 286
+  },
+  "orange-berry-pigtails": {
+    "x": 243,
+    "y": 58,
+    "w": 232,
+    "h": 274
   }
 };

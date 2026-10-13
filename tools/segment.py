@@ -82,6 +82,22 @@ CONFIG = [
         },
     },
     {
+        # Identity-preserving ImageGen edit of base-doll.png. The generated
+        # source was canvas-normalized to the shared 1086x1448 pose without
+        # scaling the character; segment only the hair so the base body never
+        # changes or distorts in-game.
+        "src": "orange-berry-pigtails-source.png",
+        "items": {
+            "orange-berry-pigtails": {
+                "points": [(510, 95), (455, 140), (590, 145), (485, 195),
+                           (555, 195), (440, 255), (455, 310), (610, 265),
+                           (625, 315)],
+                "neg": [(385, 145), (690, 210), (500, 235), (545, 245),
+                        (405, 255), (575, 245), (475, 320), (565, 310)],
+            },
+        },
+    },
+    {
         "src": "cb22790e-55c3-4ad0-bee4-37d0aba37e9c.png",  # punk outfit
         "items": {
             "punk-top": {"points": [(520, 445), (550, 480), (505, 420)]},
